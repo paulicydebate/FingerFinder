@@ -1,0 +1,285 @@
+.ff-app {
+  padding: 16px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ff-header h1 {
+  margin: 8px 0 4px;
+  font-size: 40px;
+}
+
+.ff-tagline {
+  color: var(--text);
+  opacity: 0.8;
+}
+
+.ff-panel {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  background: color-mix(in srgb, var(--bg) 96%, var(--text-h) 4%);
+}
+
+.ff-panel h2 {
+  margin-bottom: 14px;
+}
+
+.ff-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.ff-field label {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.ff-chord-selector {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .ff-chord-selector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+select,
+button {
+  font: inherit;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ff-secondary-button {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.ff-chord-summary {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ff-chord-symbol {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.ff-tone-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ff-tone-chip {
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--text-h);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 14px;
+}
+
+.ff-tone-chip-optional {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.ff-tone-chip small {
+  opacity: 0.7;
+}
+
+.ff-tuning-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ff-tuning-strings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ff-tuning-string {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  align-items: flex-start;
+}
+
+.ff-tuning-string select {
+  min-width: 72px;
+}
+
+.ff-advanced-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.ff-advanced-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.ff-position-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.ff-position-label {
+  font-weight: 600;
+  color: var(--text-h);
+  min-width: 200px;
+  text-align: center;
+}
+
+.ff-diagram-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.ff-diagram-wrap svg {
+  max-width: 100%;
+  height: auto;
+  color: var(--text-h);
+}
+
+.ff-shape-meta {
+  display: flex;
+  gap: 14px;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.ff-dot-root {
+  fill: var(--accent);
+  stroke: var(--accent-border);
+  stroke-width: 2;
+}
+
+.ff-dot-required {
+  fill: color-mix(in srgb, var(--text-h) 75%, transparent);
+  stroke: var(--border);
+  stroke-width: 1.5;
+}
+
+.ff-dot-optional {
+  fill: color-mix(in srgb, var(--text-h) 35%, transparent);
+  stroke: var(--border);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+}
+
+.ff-dot-scale {
+  fill: color-mix(in srgb, var(--accent) 45%, var(--bg) 55%);
+  stroke: var(--accent-border);
+  stroke-width: 1.25;
+}
+
+.ff-dot-text {
+  fill: var(--bg);
+}
+
+.ff-dot-subtext {
+  fill: var(--bg);
+  opacity: 0.85;
+}
+
+.ff-label {
+  fill: var(--text);
+  color: var(--text);
+}
+
+.ff-muted {
+  fill: #d9534f;
+}
+
+.ff-open {
+  fill: var(--accent);
+}
+
+.ff-muted-text {
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.ff-scale-panel h3 {
+  margin: 0 0 12px;
+}
+
+.ff-scale-group {
+  margin-bottom: 14px;
+}
+
+.ff-scale-group h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.ff-scale-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ff-scale-chip {
+  border-radius: 999px;
+  font-size: 13px;
+  padding: 6px 12px;
+}
+
+.ff-scale-chip-active {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.ff-scale-view {
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.ff-scale-fretboard-wrap {
+  overflow-x: auto;
+}
+
+.ff-scale-fretboard-wrap svg {
+  color: var(--text-h);
+}
