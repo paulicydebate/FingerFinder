@@ -283,3 +283,9 @@ button:disabled {
 .ff-scale-fretboard-wrap svg {
   color: var(--text-h);
 }
+
+.ff-playback {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}

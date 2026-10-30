@@ -8,6 +8,7 @@ import { buildChord } from "./music/chords";
 import type { Extension, Quality, Sus } from "./music/chordFormulas";
 import { ROOT_OPTIONS, type NoteSpelling } from "./music/notes";
 import { STANDARD_TUNING, type Tuning } from "./music/tuning";
+import { playShape } from "./music/playback";
 import { DEFAULT_VOICING_OPTIONS, findVoicings, positionLabel, type VoicingOptions } from "./music/voicings";
 
 export default function App() {
@@ -128,6 +129,16 @@ export default function App() {
                 Next →
               </button>
             </div>
+            {currentShape && (
+              <div className="ff-playback">
+                <button type="button" onClick={() => playShape(currentShape.frets, tuning, "strum")}>
+                  ▶ Strum
+                </button>
+                <button type="button" onClick={() => playShape(currentShape.frets, tuning, "arpeggio")}>
+                  ▶ Arpeggio
+                </button>
+              </div>
+            )}
             {currentShape && (
               <div className="ff-diagram-wrap">
                 <ChordFretboardDiagram chord={chord} shape={currentShape} tuning={tuning} maxSpan={maxSpan} />
