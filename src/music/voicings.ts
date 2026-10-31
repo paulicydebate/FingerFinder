@@ -36,6 +36,23 @@ interface Candidate {
 }
 
 /**
+ * Maps each distinct pitch class in a chord to a tone index, preferring
+ * required tones when two tones share a pitch class (e.g. sus2 and add9
+ * both land on the 2nd/9th scale degree pitch class). Shared by the voicing
+ * search and the reverse-lookup "what shape did I just play" helper.
+ */
+export function toneByPitchClassMap(chord: Chord): Map<number, number> {
+  const map = new Map<number, number>();
+  chord.tones.forEach((tone, idx) => {
+    const existing = map.get(tone.pitchClass);
+    if (existing === undefined || (tone.required && !chord.tones[existing].required)) {
+      map.set(tone.pitchClass, idx);
+    }
+  });
+  return map;
+}
+
+/**
  * Counts fretting fingers, treating same-fret notes at the lowest fret as a
  * single barre finger when nothing between them is open (a barre finger
  * physically presses every string it crosses, so an open string in the
@@ -101,16 +118,7 @@ export function findVoicings(
   const { maxFretSearch, maxSpan, maxFingers, minStrings } = options;
   const numStrings = tuning.length;
 
-  // Map each distinct pitch class to a chord tone, preferring required tones
-  // when two tones share a pitch class (e.g. sus2 and add9 both land on the
-  // 2nd/9th scale degree pitch class).
-  const toneByPitchClass = new Map<number, number>();
-  chord.tones.forEach((tone, idx) => {
-    const existing = toneByPitchClass.get(tone.pitchClass);
-    if (existing === undefined || (tone.required && !chord.tones[existing].required)) {
-      toneByPitchClass.set(tone.pitchClass, idx);
-    }
-  });
+  const toneByPitchClass = toneByPitchClassMap(chord);
 
   const requiredPitchClasses = [
     ...new Set(

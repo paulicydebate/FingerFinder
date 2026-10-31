@@ -1,5 +1,5 @@
 import { CHROMATIC_SHARP, mod12 } from "../music/notes";
-import { STANDARD_TUNING, TUNING_PRESETS, type Tuning } from "../music/tuning";
+import { guitarStringLabel as stringLabel, STANDARD_TUNING, TUNING_PRESETS, type Tuning } from "../music/tuning";
 
 interface Props {
   tuning: Tuning;
@@ -8,20 +8,6 @@ interface Props {
 
 const OCTAVE_MIN = 1;
 const OCTAVE_MAX = 6;
-
-// Guitarists number strings 1 (high e) to 6 (low E); our tuning array is
-// stored low-to-high, so string index 0 is "6th string".
-function stringLabel(index: number, total: number): string {
-  const guitarNumber = total - index;
-  return `${guitarNumber}${ordinal(guitarNumber)} string`;
-}
-
-function ordinal(n: number): string {
-  if (n % 10 === 1 && n !== 11) return "st";
-  if (n % 10 === 2 && n !== 12) return "nd";
-  if (n % 10 === 3 && n !== 13) return "rd";
-  return "th";
-}
 
 export default function TuningEditor({ tuning, onChange }: Props) {
   function setStringMidi(index: number, midi: number) {

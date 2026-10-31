@@ -37,3 +37,21 @@ export const TUNING_PRESETS: TuningPreset[] = [
 export function transposeTuning(tuning: Tuning, semitones: number): Tuning {
   return tuning.map((n) => n + semitones);
 }
+
+// Guitarists number strings 1 (high e) to 6 (low E); our tuning/shape arrays
+// are stored low-to-high, so array index 0 is "6th string".
+export function guitarStringNumber(index: number, total: number): number {
+  return total - index;
+}
+
+function ordinal(n: number): string {
+  if (n % 10 === 1 && n !== 11) return "st";
+  if (n % 10 === 2 && n !== 12) return "nd";
+  if (n % 10 === 3 && n !== 13) return "rd";
+  return "th";
+}
+
+export function guitarStringLabel(index: number, total: number): string {
+  const n = guitarStringNumber(index, total);
+  return `${n}${ordinal(n)} string`;
+}
