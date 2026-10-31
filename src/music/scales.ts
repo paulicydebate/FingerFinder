@@ -1,4 +1,5 @@
-import type { Chord } from "./chords";
+import { buildChord, type Chord } from "./chords";
+import type { Extension, Quality } from "./chordFormulas";
 import {
   mod12,
   pitchClass,
@@ -161,4 +162,71 @@ export function findScalesForChord(chord: Chord): ScaleMatches {
   }
 
   return { sameRoot, otherRoots };
+}
+
+const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII"];
+
+/** Triad quality from the interval (in semitones) of its 3rd and 5th above the degree root. */
+function triadQuality(thirdSemi: number, fifthSemi: number): Quality | null {
+  if (thirdSemi === 4 && fifthSemi === 7) return "major";
+  if (thirdSemi === 3 && fifthSemi === 7) return "minor";
+  if (thirdSemi === 3 && fifthSemi === 6) return "diminished";
+  if (thirdSemi === 4 && fifthSemi === 8) return "augmented";
+  return null;
+}
+
+/** Which 7th extension to layer on, from the interval (in semitones) of the 7th above the degree root. */
+function seventhExtension(seventhSemi: number): Extension {
+  if (seventhSemi === 11) return "maj7";
+  if (seventhSemi === 9) return "dim7"; // bb7, the fully-diminished 7th
+  return "7"; // 10 semitones = b7, the common case
+}
+
+export interface DegreeChord {
+  /** 1-7, the scale degree this chord is built on. */
+  degree: number;
+  /** Roman numeral with case for major/minor and a °/+ suffix for diminished/augmented. */
+  numeral: string;
+  triad: Chord;
+  seventh: Chord;
+}
+
+/**
+ * The diatonic chord built on each degree of a scale, by stacking thirds
+ * within the scale (skip a note, skip a note, ...) - the standard way a
+ * scale's "harmony" (I, ii, iii, IV, V, vi, vii° in a major key, etc.) is
+ * derived. Only defined for 7-note (heptatonic) scales, since stacking
+ * thirds doesn't have a conventional meaning for pentatonic, whole-tone, or
+ * 8-note diminished scales - this returns null for those.
+ */
+export function diatonicChords(root: NoteSpelling, scale: ScaleDef): DegreeChord[] | null {
+  if (scale.semitones.length !== 7) return null;
+
+  const chords: DegreeChord[] = [];
+  for (let i = 0; i < 7; i++) {
+    const degreeSemi = scale.semitones[i];
+    const thirdSemi = mod12(scale.semitones[(i + 2) % 7] - degreeSemi);
+    const fifthSemi = mod12(scale.semitones[(i + 4) % 7] - degreeSemi);
+    const seventhSemi = mod12(scale.semitones[(i + 6) % 7] - degreeSemi);
+
+    const quality = triadQuality(thirdSemi, fifthSemi);
+    if (!quality) continue; // not expected for any scale in our library, but stay safe
+
+    const degreeRoot = spellFromRoot(root, i, degreeSemi);
+    const extension = seventhExtension(seventhSemi);
+
+    let numeral = ROMAN_NUMERALS[i];
+    if (quality === "minor" || quality === "diminished") numeral = numeral.toLowerCase();
+    if (quality === "diminished") numeral += "°";
+    if (quality === "augmented") numeral += "+";
+
+    chords.push({
+      degree: i + 1,
+      numeral,
+      triad: buildChord(degreeRoot, quality, "none", "none"),
+      seventh: buildChord(degreeRoot, quality, "none", extension),
+    });
+  }
+
+  return chords;
 }

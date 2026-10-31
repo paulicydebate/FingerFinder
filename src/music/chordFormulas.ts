@@ -165,7 +165,7 @@ export function chordSymbol(
       qualitySuffix = "aug";
       break;
     case "diminished":
-      qualitySuffix = extension === "7" ? "m7b5" : "dim";
+      qualitySuffix = extension === "7" ? "m7b5" : extension === "dim7" ? "dim7" : "dim";
       break;
   }
 

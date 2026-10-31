@@ -68,7 +68,7 @@ describe("buildChord", () => {
 
   it("builds a fully diminished 7th chord (bb7)", () => {
     const chord = buildChord({ letter: "B", accidental: 0 }, "diminished", "none", "dim7");
-    expect(chord.symbol).toBe("Bdim");
+    expect(chord.symbol).toBe("Bdim7");
     const seventh = chord.tones.find((t) => t.intervalLabel === "bb7");
     expect(seventh?.noteName).toBe("Ab");
   });
