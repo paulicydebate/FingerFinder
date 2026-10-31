@@ -1,9 +1,9 @@
 import { useState } from "react";
 import type { Chord } from "../music/chords";
-import { diatonicChords, findScalesForChord, scaleTones, type ScaleMatch } from "../music/scales";
+import { findScalesForChord, type ScaleMatch } from "../music/scales";
 import { spellingToString } from "../music/notes";
 import type { Tuning } from "../music/tuning";
-import ScaleFretboardDiagram from "./ScaleFretboardDiagram";
+import ScaleDetail from "./ScaleDetail";
 
 interface Props {
   chord: Chord;
@@ -21,7 +21,6 @@ function ScaleButton({ match, active, onClick }: { match: ScaleMatch; active: bo
 export default function ScalePanel({ chord, tuning }: Props) {
   const matches = findScalesForChord(chord);
   const [selected, setSelected] = useState<ScaleMatch | null>(null);
-  const degreeChords = selected ? diatonicChords(selected.root, selected.scale) : null;
 
   function key(m: ScaleMatch) {
     return `${spellingToString(m.root)}-${m.scale.id}`;
@@ -67,25 +66,7 @@ export default function ScalePanel({ chord, tuning }: Props) {
       )}
 
       {selected && (
-        <div className="ff-scale-view">
-          <h4>{selected.displayName} across the fretboard</h4>
-          <ScaleFretboardDiagram tones={scaleTones(selected.root, selected.scale)} tuning={tuning} />
-
-          {degreeChords && (
-            <div className="ff-degree-chords">
-              <h4>Chords on each degree</h4>
-              <div className="ff-degree-chord-row">
-                {degreeChords.map((d) => (
-                  <div className="ff-degree-chord" key={d.degree}>
-                    <span className="ff-degree-chord-numeral">{d.numeral}</span>
-                    <span className="ff-degree-chord-symbol">{d.triad.symbol}</span>
-                    <span className="ff-degree-chord-seventh">{d.seventh.symbol}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+        <ScaleDetail root={selected.root} scale={selected.scale} displayName={selected.displayName} tuning={tuning} />
       )}
     </div>
   );

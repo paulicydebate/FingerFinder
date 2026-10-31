@@ -60,3 +60,29 @@ export function playShape(frets: (number | null)[], tuning: Tuning, mode: Playba
   const offsets = noteOffsets(freqs.length, mode);
   freqs.forEach((f, i) => pluck(ac, f, now + offsets[i], mode === "strum" ? 2 : 1.2));
 }
+
+export const SCALE_RUN_STEP_S = 0.18;
+export const SCALE_RUN_NOTE_DURATION_S = 0.22;
+
+/**
+ * MIDI notes for an ascending-then-descending run through a scale (root up
+ * through the octave and back down), anchored so the root lands in a
+ * comfortable mid register regardless of which note it is.
+ */
+export function scaleRunMidiNotes(rootPitchClass: number, semitones: number[]): number[] {
+  const baseMidi = 48 + rootPitchClass;
+  const ascending = [...semitones, 12].map((s) => baseMidi + s);
+  const descending = ascending.slice(0, -1).reverse();
+  return [...ascending, ...descending];
+}
+
+/** Play a scale ascending then descending, as a quick audible reference. */
+export function playScale(rootPitchClass: number, semitones: number[]): void {
+  const notes = scaleRunMidiNotes(rootPitchClass, semitones);
+  if (notes.length === 0) return;
+  const ac = getAudioContext();
+  const now = ac.currentTime + 0.02;
+  notes.forEach((midi, i) => {
+    pluck(ac, midiToFrequency(midi), now + i * SCALE_RUN_STEP_S, SCALE_RUN_NOTE_DURATION_S);
+  });
+}

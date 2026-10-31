@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { midiToFrequency, noteOffsets, shapeToFrequencies, shapeToMidiNotes } from "../playback";
+import {
+  midiToFrequency,
+  noteOffsets,
+  scaleRunMidiNotes,
+  shapeToFrequencies,
+  shapeToMidiNotes,
+} from "../playback";
 import { STANDARD_TUNING } from "../tuning";
 
 describe("playback math", () => {
@@ -21,5 +27,20 @@ describe("playback math", () => {
   it("staggers strum and arpeggio offsets", () => {
     expect(noteOffsets(3, "strum")).toEqual([0, 0.03, 0.06]);
     expect(noteOffsets(3, "arpeggio")).toEqual([0, 0.25, 0.5]);
+  });
+
+  it("builds an ascending-then-descending scale run anchored near C3-B3", () => {
+    const majorSemitones = [0, 2, 4, 5, 7, 9, 11];
+    const notes = scaleRunMidiNotes(0, majorSemitones); // root = C
+    expect(notes).toEqual([48, 50, 52, 53, 55, 57, 59, 60, 59, 57, 55, 53, 52, 50, 48]);
+    // ascending ends on the root an octave up, then comes straight back down
+    expect(notes[7]).toBe(notes[0] + 12);
+    expect(notes[notes.length - 1]).toBe(notes[0]);
+  });
+
+  it("anchors the scale run to whichever pitch class is the root", () => {
+    const minorPentatonic = [0, 3, 5, 7, 10];
+    const notes = scaleRunMidiNotes(9, minorPentatonic); // root = A
+    expect(notes[0]).toBe(48 + 9);
   });
 });
