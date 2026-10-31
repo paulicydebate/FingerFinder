@@ -343,3 +343,106 @@ button:disabled {
 .ff-fret-input-string select {
   min-width: 100px;
 }
+
+.ff-metronome-bpm-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.ff-metronome-bpm-input {
+  width: 70px;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.ff-metronome-slider {
+  width: 100%;
+  margin: 4px 0 18px;
+  accent-color: var(--accent);
+}
+
+.ff-metronome-beats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.ff-beat-light {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 56px;
+  padding: 10px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  transition: transform 0.05s ease-out;
+}
+
+.ff-beat-light-number {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ff-beat-light-accent {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.ff-beat-light-normal {
+  color: var(--text-h);
+}
+
+.ff-beat-light-silent {
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+.ff-beat-light-active {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.ff-beat-light-subticks {
+  display: flex;
+  gap: 3px;
+}
+
+.ff-beat-subtick {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--text-h) 30%, transparent);
+}
+
+.ff-beat-subtick-active {
+  background: var(--accent);
+}
+
+.ff-metronome-transport {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.ff-primary-button {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  font-size: 18px;
+  font-weight: 700;
+  padding: 12px 36px;
+  border-radius: 999px;
+}

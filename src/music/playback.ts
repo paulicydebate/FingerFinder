@@ -1,3 +1,4 @@
+import { getAudioContext } from "./audioContext";
 import type { Tuning } from "./tuning";
 
 /** Frequency in Hz of a MIDI note number (A4 = 69 = 440 Hz). */
@@ -33,19 +34,6 @@ export function noteOffsets(count: number, mode: PlaybackMode): number[] {
   return Array.from({ length: count }, (_, i) => i * step);
 }
 
-let ctx: AudioContext | null = null;
-
-function getContext(): AudioContext {
-  if (!ctx) {
-    const Ctor =
-      window.AudioContext ??
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    ctx = new Ctor();
-  }
-  if (ctx.state === "suspended") void ctx.resume();
-  return ctx;
-}
-
 function pluck(ac: AudioContext, freq: number, start: number, duration: number) {
   const osc = ac.createOscillator();
   osc.type = "sawtooth";
@@ -67,7 +55,7 @@ function pluck(ac: AudioContext, freq: number, start: number, duration: number) 
 export function playShape(frets: (number | null)[], tuning: Tuning, mode: PlaybackMode): void {
   const freqs = shapeToFrequencies(frets, tuning);
   if (freqs.length === 0) return;
-  const ac = getContext();
+  const ac = getAudioContext();
   const now = ac.currentTime + 0.02;
   const offsets = noteOffsets(freqs.length, mode);
   freqs.forEach((f, i) => pluck(ac, f, now + offsets[i], mode === "strum" ? 2 : 1.2));

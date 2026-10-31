@@ -4,14 +4,16 @@ import TuningEditor from "./components/TuningEditor";
 import ChordFinderPanel from "./components/ChordFinderPanel";
 import ReverseLookupPanel from "./components/ReverseLookupPanel";
 import ArpeggioPanel from "./components/ArpeggioPanel";
+import MetronomePanel from "./components/MetronomePanel";
 import { STANDARD_TUNING, type Tuning } from "./music/tuning";
 
-type Tab = "finder" | "reverse" | "arpeggio";
+type Tab = "finder" | "reverse" | "arpeggio" | "metronome";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "finder", label: "Chord Finder" },
   { id: "reverse", label: "Reverse Lookup" },
   { id: "arpeggio", label: "Arpeggio Finder" },
+  { id: "metronome", label: "Metronome" },
 ];
 
 export default function App() {
@@ -46,6 +48,7 @@ export default function App() {
       {tab === "finder" && <ChordFinderPanel tuning={tuning} />}
       {tab === "reverse" && <ReverseLookupPanel tuning={tuning} />}
       {tab === "arpeggio" && <ArpeggioPanel tuning={tuning} />}
+      {tab === "metronome" && <MetronomePanel />}
     </div>
   );
 }
