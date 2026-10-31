@@ -48,7 +48,8 @@ export default function App() {
       {tab === "finder" && <ChordFinderPanel tuning={tuning} />}
       {tab === "reverse" && <ReverseLookupPanel tuning={tuning} />}
       {tab === "arpeggio" && <ArpeggioPanel tuning={tuning} />}
-      {tab === "metronome" && <MetronomePanel />}
+      {/* Stays mounted across tabs so a running click survives navigating away. */}
+      <MetronomePanel active={tab === "metronome"} />
     </div>
   );
 }

@@ -26,7 +26,14 @@ interface CurrentBeat {
   subIndex: number;
 }
 
-export default function MetronomePanel() {
+interface Props {
+  /** Whether the Metronome tab is the one currently showing. The panel stays
+   * mounted (and playing) even when another tab is active, so practicing a
+   * chord or scale elsewhere can still be done against the click. */
+  active: boolean;
+}
+
+export default function MetronomePanel({ active }: Props) {
   const [bpm, setBpm] = useState(DEFAULT_METRONOME_SETTINGS.bpm);
   const [beatsPerMeasure, setBeatsPerMeasure] = useState(DEFAULT_METRONOME_SETTINGS.beatsPerMeasure);
   const [subdivision, setSubdivision] = useState<Subdivision>(DEFAULT_METRONOME_SETTINGS.subdivision);
@@ -77,7 +84,8 @@ export default function MetronomePanel() {
     }, LOOKAHEAD_MS);
   }
 
-  // Stop cleanly when the tab is switched away (this component unmounts).
+  // This panel stays mounted across tab switches (so playback survives
+  // navigating elsewhere); only stop cleanly if the whole app unmounts.
   useEffect(() => stop, []);
 
   function handleBeatsPerMeasureChange(next: number) {
@@ -93,124 +101,138 @@ export default function MetronomePanel() {
   }
 
   return (
-    <section className="ff-panel">
-      <h2>Metronome</h2>
+    <>
+      <section className="ff-panel" hidden={!active}>
+        <h2>Metronome</h2>
 
-      <div className="ff-metronome-bpm-row">
-        <button
-          type="button"
-          className="ff-secondary-button"
-          onClick={() => setBpm((b) => clampBpm(b - 1))}
-          aria-label="Decrease tempo"
-        >
-          −
-        </button>
-        <input
-          type="number"
-          className="ff-metronome-bpm-input"
-          min={MIN_BPM}
-          max={MAX_BPM}
-          value={bpm}
-          onChange={(e) => setBpm(clampBpm(Number(e.target.value) || MIN_BPM))}
-        />
-        <span className="ff-label">BPM</span>
-        <button
-          type="button"
-          className="ff-secondary-button"
-          onClick={() => setBpm((b) => clampBpm(b + 1))}
-          aria-label="Increase tempo"
-        >
-          +
-        </button>
-        <button type="button" className="ff-secondary-button" onClick={handleTap}>
-          Tap tempo
-        </button>
-      </div>
-
-      <input
-        type="range"
-        min={MIN_BPM}
-        max={MAX_BPM}
-        value={bpm}
-        onChange={(e) => setBpm(clampBpm(Number(e.target.value)))}
-        className="ff-metronome-slider"
-        aria-label="Tempo slider"
-      />
-
-      <div className="ff-advanced-row">
-        <label>
-          Beats per measure
-          <select
-            value={beatsPerMeasure}
-            onChange={(e) => handleBeatsPerMeasureChange(Number(e.target.value))}
-          >
-            {BEATS_PER_MEASURE_OPTIONS.map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Subdivision
-          <select
-            value={subdivision}
-            onChange={(e) => setSubdivision(Number(e.target.value) as Subdivision)}
-          >
-            {SUBDIVISION_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Reset accents
+        <div className="ff-metronome-bpm-row">
           <button
             type="button"
             className="ff-secondary-button"
-            onClick={() => setAccents(defaultAccents(beatsPerMeasure))}
+            onClick={() => setBpm((b) => clampBpm(b - 1))}
+            aria-label="Decrease tempo"
           >
-            Accent beat 1 only
+            −
           </button>
-        </label>
-      </div>
-
-      <p className="ff-muted-text">Click a beat below to cycle it through accent → normal → silent.</p>
-
-      <div className="ff-metronome-beats">
-        {accents.map((accent, i) => (
+          <input
+            type="number"
+            className="ff-metronome-bpm-input"
+            min={MIN_BPM}
+            max={MAX_BPM}
+            value={bpm}
+            onChange={(e) => setBpm(clampBpm(Number(e.target.value) || MIN_BPM))}
+          />
+          <span className="ff-label">BPM</span>
           <button
-            key={i}
             type="button"
-            className={`ff-beat-light ff-beat-light-${accent}${
-              running && currentBeat?.beatIndex === i ? " ff-beat-light-active" : ""
-            }`}
-            onClick={() => setAccents((prev) => prev.map((a, idx) => (idx === i ? cycleAccent(a) : a)))}
-            aria-label={`Beat ${i + 1}: ${accent}`}
+            className="ff-secondary-button"
+            onClick={() => setBpm((b) => clampBpm(b + 1))}
+            aria-label="Increase tempo"
           >
-            <span className="ff-beat-light-number">{i + 1}</span>
-            <span className="ff-beat-light-subticks">
-              {Array.from({ length: subdivision }).map((_, sub) => (
-                <span
-                  key={sub}
-                  className={`ff-beat-subtick${
-                    running && currentBeat?.beatIndex === i && currentBeat.subIndex === sub
-                      ? " ff-beat-subtick-active"
-                      : ""
-                  }`}
-                />
-              ))}
-            </span>
+            +
           </button>
-        ))}
-      </div>
+          <button type="button" className="ff-secondary-button" onClick={handleTap}>
+            Tap tempo
+          </button>
+        </div>
 
-      <div className="ff-metronome-transport">
-        <button type="button" className="ff-primary-button" onClick={running ? stop : start}>
-          {running ? "■ Stop" : "▶ Start"}
-        </button>
-      </div>
-    </section>
+        <input
+          type="range"
+          min={MIN_BPM}
+          max={MAX_BPM}
+          value={bpm}
+          onChange={(e) => setBpm(clampBpm(Number(e.target.value)))}
+          className="ff-metronome-slider"
+          aria-label="Tempo slider"
+        />
+
+        <div className="ff-advanced-row">
+          <label>
+            Beats per measure
+            <select
+              value={beatsPerMeasure}
+              onChange={(e) => handleBeatsPerMeasureChange(Number(e.target.value))}
+            >
+              {BEATS_PER_MEASURE_OPTIONS.map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Subdivision
+            <select
+              value={subdivision}
+              onChange={(e) => setSubdivision(Number(e.target.value) as Subdivision)}
+            >
+              {SUBDIVISION_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Reset accents
+            <button
+              type="button"
+              className="ff-secondary-button"
+              onClick={() => setAccents(defaultAccents(beatsPerMeasure))}
+            >
+              Accent beat 1 only
+            </button>
+          </label>
+        </div>
+
+        <p className="ff-muted-text">Click a beat below to cycle it through accent → normal → silent.</p>
+
+        <div className="ff-metronome-beats">
+          {accents.map((accent, i) => (
+            <button
+              key={i}
+              type="button"
+              className={`ff-beat-light ff-beat-light-${accent}${
+                running && currentBeat?.beatIndex === i ? " ff-beat-light-active" : ""
+              }`}
+              onClick={() => setAccents((prev) => prev.map((a, idx) => (idx === i ? cycleAccent(a) : a)))}
+              aria-label={`Beat ${i + 1}: ${accent}`}
+            >
+              <span className="ff-beat-light-number">{i + 1}</span>
+              <span className="ff-beat-light-subticks">
+                {Array.from({ length: subdivision }).map((_, sub) => (
+                  <span
+                    key={sub}
+                    className={`ff-beat-subtick${
+                      running && currentBeat?.beatIndex === i && currentBeat.subIndex === sub
+                        ? " ff-beat-subtick-active"
+                        : ""
+                    }`}
+                  />
+                ))}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <div className="ff-metronome-transport">
+          <button type="button" className="ff-primary-button" onClick={running ? stop : start}>
+            {running ? "■ Stop" : "▶ Start"}
+          </button>
+        </div>
+      </section>
+
+      {running && !active && (
+        <div className="ff-metronome-minibar">
+          <span className="ff-metronome-minibar-dot" />
+          <span>
+            Metronome running — {bpm} BPM, beat {(currentBeat?.beatIndex ?? 0) + 1} of {beatsPerMeasure}
+          </span>
+          <button type="button" onClick={stop}>
+            ■ Stop
+          </button>
+        </div>
+      )}
+    </>
   );
 }

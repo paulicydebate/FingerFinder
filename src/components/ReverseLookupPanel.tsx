@@ -3,6 +3,7 @@ import FretInputGrid from "./FretInputGrid";
 import ChordFretboardDiagram from "./ChordFretboardDiagram";
 import { identifyChord, shapeFromFrets } from "../music/reverseLookup";
 import { findVoicings, positionLabel } from "../music/voicings";
+import { playShape } from "../music/playback";
 import type { Tuning } from "../music/tuning";
 
 interface Props {
@@ -90,6 +91,14 @@ export default function ReverseLookupPanel({ tuning }: Props) {
             {enteredShape && (
               <div className="ff-diagram-wrap">
                 <h4>What you entered</h4>
+                <div className="ff-playback">
+                  <button type="button" onClick={() => playShape(enteredShape.frets, tuning, "strum")}>
+                    ▶ Strum
+                  </button>
+                  <button type="button" onClick={() => playShape(enteredShape.frets, tuning, "arpeggio")}>
+                    ▶ Arpeggio
+                  </button>
+                </div>
                 <ChordFretboardDiagram
                   chord={selected!.chord}
                   shape={enteredShape}
@@ -133,6 +142,14 @@ export default function ReverseLookupPanel({ tuning }: Props) {
           </div>
           {currentAlt && (
             <div className="ff-diagram-wrap">
+              <div className="ff-playback">
+                <button type="button" onClick={() => playShape(currentAlt.frets, tuning, "strum")}>
+                  ▶ Strum
+                </button>
+                <button type="button" onClick={() => playShape(currentAlt.frets, tuning, "arpeggio")}>
+                  ▶ Arpeggio
+                </button>
+              </div>
               <ChordFretboardDiagram chord={selected.chord} shape={currentAlt} tuning={tuning} maxSpan={4} />
               <div className="ff-shape-meta">
                 <span>{currentAlt.soundingStrings} strings</span>
