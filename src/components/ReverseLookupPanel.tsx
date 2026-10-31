@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import FretInputGrid from "./FretInputGrid";
 import ChordFretboardDiagram from "./ChordFretboardDiagram";
+import ScalePanel from "./ScalePanel";
 import { identifyChord, shapeFromFrets } from "../music/reverseLookup";
 import { findVoicings, positionLabel } from "../music/voicings";
 import { playShape } from "../music/playback";
@@ -160,6 +161,12 @@ export default function ReverseLookupPanel({ tuning }: Props) {
               </div>
             </div>
           )}
+        </section>
+      )}
+
+      {selected && (
+        <section className="ff-panel">
+          <ScalePanel chord={selected.chord} tuning={tuning} />
         </section>
       )}
     </>
